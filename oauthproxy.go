@@ -842,6 +842,10 @@ func (p *OAuthProxy) AuthOnly(rw http.ResponseWriter, req *http.Request) {
 
 // SkipAuthProxy proxies allowlisted requests and skips authentication
 func (p *OAuthProxy) SkipAuthProxy(rw http.ResponseWriter, req *http.Request) {
+	session, err := p.getAuthenticatedSession(rw, req)
+	if err == nil {
+		p.addHeadersForProxying(rw, session)
+	}
 	p.headersChain.Then(p.serveMux).ServeHTTP(rw, req)
 }
 
