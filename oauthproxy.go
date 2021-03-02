@@ -491,8 +491,6 @@ func (p *OAuthProxy) serveHTTP(rw http.ResponseWriter, req *http.Request) {
 	switch path := req.URL.Path; {
 	case path == p.RobotsPath:
 		p.RobotsTxt(rw, req)
-	case p.IsAllowedRequest(req):
-		p.SkipAuthProxy(rw, req)
 	case path == p.SignInPath:
 		p.SignIn(rw, req)
 	case path == p.SignOutPath:
@@ -505,6 +503,8 @@ func (p *OAuthProxy) serveHTTP(rw http.ResponseWriter, req *http.Request) {
 		p.AuthOnly(rw, req)
 	case path == p.UserInfoPath:
 		p.UserInfo(rw, req)
+	case p.IsAllowedRequest(req):
+		p.SkipAuthProxy(rw, req)
 	default:
 		p.Proxy(rw, req)
 	}
